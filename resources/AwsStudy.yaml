@@ -1,0 +1,11 @@
+# AWSテンプレートのバージョン。存在する唯一のバージョンが下記なので実質固定。
+AWSTemplateFormatVersion: '2010-09-09'
+# テンプレートの説明。実行時に表示されるので記載すべき。
+Description: 'AWS-Study Template'
+Resources:
+  FirstVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.2.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
