@@ -1,11 +1,51 @@
 # AWSテンプレートのバージョン。存在する唯一のバージョンが下記なので実質固定。
 AWSTemplateFormatVersion: '2010-09-09'
 # テンプレートの説明。実行時に表示されるので記載すべき。
-Description: 'AWS-Study Template'
+Description: AWS-Study Template
+# リソース定義。
 Resources:
-  FirstVPC:
+  # VPC
+  VPC:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 10.2.0.0/16
       EnableDnsHostnames: true
       EnableDnsSupport: true
+
+  # Subnet
+  SubnetAZ1a:
+      Type: AWS::EC2::Subnet
+      Properties:
+        CidrBlock: 10.2.0.0/24
+        VpcId: !Ref VPC
+        AvailabilityZone: ap-northeast-1a
+  SubnetAZ1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.2.1.0/24
+      VpcId: !Ref VPC
+      AvailabilityZone: ap-northeast-1c
+
+  # InternetGateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  # RouteTable
+  RouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: !Ref VPC
+  RouteLocal:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId: !Ref RouteTable
+        DestinationCidrBlock: 10.2.0.0/16
+  RouteInternet:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+
+
