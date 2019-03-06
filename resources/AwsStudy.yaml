@@ -49,13 +49,6 @@ Resources:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
 
-  # DHCP
-  DHCPOptions:
-    Type: AWS::EC2::DHCPOptions
-    Properties:
-      DomainName: ap-northeast-1.compute.internal
-      DomainNameServers: AmazonProvidedDNS
-
   # NetworkACL
   NetworkACL:
     Type: AWS::EC2::NetworkAcl
@@ -172,7 +165,7 @@ Resources:
       StorageType: gp2
       BackupRetentionPeriod: 1
       MasterUsername: root
-      MasterUserPassword: root
+      MasterUserPassword: rootroot
       PreferredBackupWindow: 15:00-16:00
       PreferredMaintenanceWindow: sun:18:00-sun:19:00
       DBName: TimeLine
