@@ -237,11 +237,3 @@ Resources:
           Type: forward
       Port: 80
       Protocol: HTTP
-
-
-
-
-
-
-
-
