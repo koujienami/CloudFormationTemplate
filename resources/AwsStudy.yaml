@@ -49,31 +49,6 @@ Resources:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
 
-  # NetworkACL
-  NetworkACL:
-    Type: AWS::EC2::NetworkAcl
-    Properties:
-      VpcId: !Ref VPC
-  ACLEntry:
-    Type: AWS::EC2::NetworkAclEntry
-    Properties:
-      NetworkAclId: !Ref NetworkACL
-      Protocol: -1
-      RuleAction: allow
-      RuleNumber: 100
-      CidrBlock: 0.0.0.0/0
-      Egress: true
-  SubnetAZ1aACL:
-    Type: AWS::EC2::SubnetNetworkAclAssociation
-    Properties:
-      NetworkAclId: !Ref NetworkACL
-      SubnetId: !Ref SubnetAZ1a
-  SubnetAZ1cACL:
-    Type: AWS::EC2::SubnetNetworkAclAssociation
-    Properties:
-      NetworkAclId: !Ref NetworkACL
-      SubnetId: !Ref SubnetAZ1c
-
   # RouteTable
   RouteTable:
       Type: AWS::EC2::RouteTable
@@ -141,7 +116,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-0d7ed3ddb85b521a6
-      InstanceType: t2.micro
+      InstanceType: t2.medium
       SubnetId: !Ref SubnetAZ1a
       DisableApiTermination: false
       InstanceInitiatedShutdownBehavior: stop
