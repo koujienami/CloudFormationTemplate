@@ -81,7 +81,7 @@ Resources:
     Properties:
       GroupDescription: raisetech EC2
       VpcId: vpc-a9113ece
-      SecurityGroupIngress:　#既存の使うには?
+      SecurityGroupIngress:　#　既存の使うには?
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
