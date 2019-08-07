@@ -1,0 +1,232 @@
+# AWSテンプレートのバージョン。存在する唯一のバージョンが下記なので実質固定。
+AWSTemplateFormatVersion: '2010-09-09'
+
+# テンプレートの説明。実行時に表示されるので記載すべき。
+Description: raisetech template
+
+Resources:
+
+  # VPC
+#  VPC:#あるから作らなくてよい。
+#    Type: AWS::EC2::VPC
+#    Properties:
+#      CidrBlock: 10.2.0.0/16
+#      EnableDnsHostnames: true
+#      EnableDnsSupport: true
+#      Tags:
+#        -s Key: Name
+#          Value: raisetech-vpc
+
+  # Subnet
+  Subnet_in_ap-northeast-1a:
+      Type: AWS::EC2::Subnet
+      Properties:
+        CidrBlock: 172.31.32.0/20 #10.2.0.0/24
+        VpcId: vpc-a9113ece
+        AvailabilityZone: ap-northeast-1a
+        Tags:
+          - Key: Name
+            Value: raisetech-subnet-in-az1a
+
+  Subnet_in_ap-northeast-1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 172.31.0.0/20 # 10.2.1.0/24
+      VpcId: vpc-a9113ece
+      AvailabilityZone: ap-northeast-1c
+      Tags:
+        - Key: Name
+          Value: raisetech-subnet-in-az1c # aws-study-subnetaz1c
+
+  # InternetGateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: raisetech-igw
+
+  # VPCGatewayAttachment #InternetGateway作っておいて、VPCにアタッチする
+  GatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: vpc-a9113ece
+      InternetGatewayId: !Ref InternetGateway
+
+  # RouteTable
+  RouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: vpc-a9113ece
+        Tags:
+          - Key: Name
+            Value: raisetech-route
+
+  RouteInternet:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  RouteLocal:
+    Type: AWS::EC2::SubnetRouteTableAssociation # サブネットをルートテーブルに関連付け
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref Subnet_in_ap-northeast-1a
+
+  # SecurityGroup
+  SecurityGroupEC2:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: raisetech EC2
+      VpcId: vpc-a9113ece
+      SecurityGroupIngress:　 # 既存の使うには?
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3000 # unicorn(nginx⇔Rails)
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080 # Jenkins
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+
+      SecurityGroupEgress:
+        - IpProtocol: -1 # ここから　-1とは?
+          CidrIp: 0.0.0.0/0
+
+      Tags:
+        - Key: Name
+          Value: raisetech-securityGroup-ec2
+
+#  SecurityGroupRDS:
+
+#    Type: AWS::EC2::SecurityGroup
+
+#    Properties:
+#      GroupDescription: raisetech RDS
+#      VpcId: vpc-a9113ece
+#      SecurityGroupIngress:
+#        - IpProtocol: tcp
+#          FromPort: 3306
+#          ToPort: 3306
+#          SourceSecurityGroupId: !Ref SecurityGroupEC2
+
+#    SecurityGroupEgress:
+#        - IpProtocol: -1
+#          CidrIp: 0.0.0.0/0
+
+#    Tags:
+#        - Key: Name
+#          Value: raisetech-securityGroup-rds
+
+
+
+　# EC2
+  EC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0d7ed3ddb85b521a6
+      InstanceType: t2.micro
+      SubnetId: !Ref Subnet_in_ap-northeast-1a
+      DisableApiTermination: false
+      InstanceInitiatedShutdownBehavior: stop
+      KeyName: 3rd_rsa
+      Monitoring: false
+      SecurityGroupIds:
+        - !Ref SecurityGroupEC2
+      Tags:
+        - Key: Name
+          Value: raisetech-ec2
+
+  # RDS
+  #RDS:
+  #  Type: AWS::RDS::DBInstance
+  #  Properties:
+  #    AllocatedStorage: 20
+  #    AllowMajorVersionUpgrade: false
+  #    AutoMinorVersionUpgrade: true
+  #    DBInstanceClass: db.t2.micro
+  #    Port: 3306
+  #    StorageType: gp2
+  #    BackupRetentionPeriod: 1
+  #    MasterUsername: root
+  #    MasterUserPassword: root # rootroot
+  #    PreferredBackupWindow: 15:00-16:00
+  #    PreferredMaintenanceWindow: sun:18:00-sun:19:00
+  #    DBName: TimeLine
+  #    Engine: mysql
+  #    EngineVersion: 8.0.13
+  #    LicenseModel: general-public-license
+  #    DBSubnetGroupName: !Ref DBSubnetGroup
+  #    VPCSecurityGroups:
+  #      - !Ref SecurityGroupRDS
+  #    Tags:
+  #      - Key: Name
+  #        Value: raisetech-rds
+
+  #DBSubnetGroup:
+  #  Type: AWS::RDS::DBSubnetGroup
+  #  Properties:
+  #    DBSubnetGroupDescription: Created from the RDS Management Console
+  #    SubnetIds:
+  #      - !Ref Subnet_in_ap-northeast-1a
+  #      - !Ref Subnet_in_ap-northeast-1c
+
+  # ELB
+　ELB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer # Application Load Balancer と Network Load Balancer をサポートだからV2を選ぶ
+    Properties:
+      Name: raisetech-elb
+      SecurityGroups:
+        - !Ref SecurityGroupEC2
+
+      Subnets:
+
+        - !Ref Subnet_in_ap-northeast-1a
+        - !Ref Subnet_in_ap-northeast-1c
+
+      Tags:
+        - Key: Name
+          Value: raisetech-elb
+
+  ELBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: raisetech-elb-target-group
+      Port: 80
+      Protocol: HTTP
+      VpcId: vpc-a9113ece
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 5
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: "/"
+      HealthCheckPort: "traffic-port"
+      HealthCheckIntervalSeconds: 10
+      Matcher:
+        HttpCode: 200
+      Tags:
+        - Key: Name
+          Value: raisetech-elb-target-group
+      Targets:
+        - Id: !Ref EC2
+          Port: 80
+
+#  ELBListener:　# listnerとは、接続リクエストを確認し、1 つまたは複数のターゲットグループへそのリクエストを転送するやつ。
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref ELB
+      DefaultActions:
+        - TargetGroupArn: !Ref ELBTargetGroup        
+        Type: forward
+      Port: 80
+      Protocol: HTTP
