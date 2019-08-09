@@ -221,7 +221,7 @@ Resources:
         - Id: !Ref EC2
           Port: 80
 
-#  ELBListener:　# listnerとは、接続リクエストを確認し、1 つまたは複数のターゲットグループへそのリクエストを転送するやつ。
+  ELBListener:　# listnerとは、接続リクエストを確認し、1 つまたは複数のターゲットグループへそのリクエストを転送するやつ。
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       LoadBalancerArn: !Ref ELB
