@@ -81,8 +81,8 @@ Resources:
     Properties:
       GroupDescription: raisetech EC2
       VpcId: vpc-a9113ece
-      SecurityGroupIngress:　 # 既存の使うには?
-       # - IpProtocol: tcp
+      SecurityGroupIngress:
+        - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
@@ -130,7 +130,7 @@ Resources:
 
 
 
-　# EC2
+# EC2
   EC2:
     Type: AWS::EC2::Instance
     Properties:
@@ -198,7 +198,7 @@ Resources:
         - Key: Name
           Value: raisetech-elb
 
-  ELBTargetGroup:
+ELBTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Name: raisetech-elb-target-group
@@ -227,6 +227,6 @@ Resources:
       LoadBalancerArn: !Ref ELB
       DefaultActions:
         - TargetGroupArn: !Ref ELBTargetGroup        
-        Type: forward
+          Type: forward
       Port: 80
       Protocol: HTTP
