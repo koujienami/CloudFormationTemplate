@@ -198,7 +198,7 @@ Resources:
         - Key: Name
           Value: raisetech-elb
 
-#ELBTargetGroup:
+ELBTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Name: raisetech-elb-target-group
