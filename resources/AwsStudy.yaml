@@ -112,10 +112,6 @@ Resources:
           Value: aws-study-securityGroup-rds
 
   # EIP
-  EIP:
-    Type: AWS::EC2::EIP
-    Properties:
-      Domain: vpc
   ElasticIPAssociate:
     Type: AWS::EC2::EIPAssociation
     Properties:
