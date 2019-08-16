@@ -111,11 +111,22 @@ Resources:
         - Key: Name
           Value: aws-study-securityGroup-rds
 
+  # EIP
+  EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+  ElasticIPAssociate:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      EIP: 13.112.139.96
+      InstanceId: !Ref EC2
+
   # EC2
   EC2:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-0d7ed3ddb85b521a6
+      ImageId: ami-0c29f88e5e84381b7
       InstanceType: t2.medium
       SubnetId: !Ref SubnetAZ1a
       DisableApiTermination: false
