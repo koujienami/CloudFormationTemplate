@@ -122,7 +122,7 @@ Resources:
   EC2:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-0c29f88e5e84381b7
+      ImageId: ami-0e877e3e1cc848c03
       InstanceType: t2.medium
       SubnetId: !Ref SubnetAZ1a
       DisableApiTermination: false
