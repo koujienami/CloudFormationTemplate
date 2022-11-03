@@ -1,0 +1,7 @@
+- name: install by Git
+  yum:
+    name:
+      - git
+  become: yes
+  tags:
+    - git

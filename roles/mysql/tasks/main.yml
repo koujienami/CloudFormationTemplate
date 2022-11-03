@@ -1,0 +1,8 @@
+- name: install MySQL
+  yum:
+    name:
+      - mysql
+  become: yes
+  tags:
+    - mysql
+    - install

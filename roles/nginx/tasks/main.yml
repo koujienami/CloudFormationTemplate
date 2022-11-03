@@ -1,0 +1,36 @@
+- name: Register nginx package
+  yum:
+    name: http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+  become: yes
+  tags:
+    - nginx
+
+- name: Install nginx
+  yum:
+    name: nginx
+    state: latest
+  become: yes
+  tags:
+    - nginx
+    - nginx:install
+    - install
+
+- name: Put local.conf
+  become: yes
+  template:
+    src: roles/nginx/templates/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  tags:
+    - nginx
+
+- name: Set auto start nginx
+  become: yes
+  shell: chkconfig nginx on
+  tags:
+    - nginx
+
+- name: Restart nginx
+  shell: systemctl start nginx
+  become: yes
+  tags:
+    - nginx

@@ -1,0 +1,14 @@
+- name: Setup nodejs10.x
+  shell: curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash -
+  tags:
+    - nodejs
+
+- name: Installing latest version of node.js
+  become: yes
+  yum:
+    name: nodejs
+    state: latest
+  tags:
+    - nodejs
+    - nodejs:install
+    - install

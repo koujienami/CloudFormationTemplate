@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@3.1.3
+  ansible: orbss/ansible@0.2.3
 
 jobs:
   execute-cloudformation:
@@ -16,6 +17,9 @@ jobs:
           name: execute cloudformation
           command: 
             aws cloudformation deploy --stack-name aws-study-cloudformation --template-file resources/AwsStudy.yaml
+
+  execute-ansible:
+    executor: ansible-playbook/default
 
 workflows:
   CloudFormationTemplate:
