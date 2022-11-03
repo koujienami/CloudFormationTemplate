@@ -15,7 +15,6 @@ jobs:
       - run:
           name: execute cloudformation
           command: 
-            set -x
             aws cloudformation deploy --stack-name aws-study-cloudformation --template-file resources/AwsStudy.yaml
 
 workflows:
