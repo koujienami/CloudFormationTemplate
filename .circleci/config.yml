@@ -19,9 +19,6 @@ jobs:
             aws cloudformation deploy --stack-name aws-study-cloudformation --template-file resources/AwsStudy.yaml
           no_output_timeout: 30m
 
-  execute-ansible:
-    executor: ansible-playbook/default
-
 workflows:
   CloudFormationTemplate:
     jobs:
