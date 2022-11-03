@@ -152,7 +152,7 @@ Resources:
       PreferredMaintenanceWindow: sun:18:00-sun:19:00
       DBName: TimeLine
       Engine: mysql
-      EngineVersion: 8.0.13
+      EngineVersion: 8.0.28
       LicenseModel: general-public-license
       DBSubnetGroupName: !Ref DBSubnetGroup
       VPCSecurityGroups:
